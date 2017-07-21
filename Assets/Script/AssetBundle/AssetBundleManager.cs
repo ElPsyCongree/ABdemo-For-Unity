@@ -60,6 +60,8 @@ public class LoadedAssetBundle {
 
 public class AssetBundleManager {
     private static AssetBundleManifest m_manifestBundle;
+
+    #region Simulate
 #if UNITY_EDITOR
     static int m_SimulateAssetBundleInEditor = -1;
     const string kSimulateAssetBundles = "SimulateAssetBundles";
@@ -82,9 +84,12 @@ public class AssetBundleManager {
         }
     }
 #endif
+    #endregion
 
     public static UnityEngine.Object LoadAssetBundle(string assetBundleName, string assetName) {
         UnityEngine.Object result = null;
+
+        #region Simulate
 #if UNITY_EDITOR
         if (SimulateAssetBundleInEditor) {
             string[] assetPaths = AssetDatabase.GetAssetPathsFromAssetBundleAndAssetName(assetBundleName, assetName);
@@ -96,6 +101,7 @@ public class AssetBundleManager {
             return result;
         }
 #endif
+        #endregion
 
         #region normal mode
         string abPath = Path.Combine(Utility.AssetBundlesOutputPath, Utility.GetPlatformName());
