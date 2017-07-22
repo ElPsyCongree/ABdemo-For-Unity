@@ -125,6 +125,14 @@ public class AssetBundleManager {
         AssetBundle cubeBundle = AssetBundle.LoadFromFile(Path.Combine(abPath, assetBundleName));
 
         result = cubeBundle.LoadAsset(assetName);
+
+        for (int index = 0; index < cubedepends.Length; index++) {
+            //加载所有的依赖文件;  
+            dependsAssetbundle[index].Unload(false);
+        }
+        cubeBundle.Unload(false);
+
+
         return result;
         #endregion
 
