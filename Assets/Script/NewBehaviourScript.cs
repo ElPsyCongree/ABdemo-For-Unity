@@ -1,21 +1,22 @@
-﻿using System.Collections;
+﻿using AssetBundleTool;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour {
     GameObject g;
-    GameObject go;
+    GameObject go1;
+    GameObject go2;
     float time = 0;
 
     // Use this for initialization
     void Start() {
         g = AssetBundleManager.LoadAssetBundle("test.hd", "Cube") as GameObject;
-        go = Instantiate(g);
+        go1 = Instantiate(g);
 
-        for (int i = 0, imax = 1000; i < imax; i++) {
-            Instantiate(g);
-        }
-        //Instantiate(g);
+        g = AssetBundleManager.LoadAssetBundle("test.hd", "Cube1") as GameObject;
+        go2 = Instantiate(g);
+        var m = go1.GetComponent<MeshFilter>().mesh;
     }
 
     // Update is called once per frame
@@ -35,16 +36,18 @@ public class NewBehaviourScript : MonoBehaviour {
             }
         }
         Debug.Log(" using: " + (size >> 10) + "kb");
+        Resources.UnloadUnusedAssets();
     }
 
     [ContextMenu("click")]
     private void click() {
-        Material m = go.GetComponent<MeshRenderer>().sharedMaterial;
+        Material m = go1.GetComponent<MeshRenderer>().sharedMaterial;
         Resources.UnloadAsset(m.mainTexture);
     }
 
     [ContextMenu("resume")]
     private void resume() {
-        go.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = AssetBundleManager.LoadAssetBundle("test-t.hd", "faLanCheng") as Texture;
+
+        //go1.GetComponent<MeshRenderer>().sharedMaterial.mainTexture = AssetBundleManager.LoadAssetBundle("test-t.hd", "SciFi Atlas") as Texture;
     }
 }
