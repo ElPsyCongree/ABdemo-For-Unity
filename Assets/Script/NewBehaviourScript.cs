@@ -1,6 +1,7 @@
 ﻿using AssetBundleTool;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour {
@@ -11,12 +12,54 @@ public class NewBehaviourScript : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        g = AssetBundleManager.LoadAssetBundle("test.hd", "Cube") as GameObject;
-        go1 = Instantiate(g);
+        //g = AssetBundleManager.LoadAssetBundle("test.hd", "Cube") as GameObject;
+        //go1 = Instantiate(g);
 
-        g = AssetBundleManager.LoadAssetBundle("test.hd", "Cube1") as GameObject;
-        go2 = Instantiate(g);
-        var m = go1.GetComponent<MeshFilter>().mesh;
+        //g = AssetBundleManager.LoadAssetBundle("test.hd", "Cube1") as GameObject;
+        //go2 = Instantiate(g);
+
+        StartCoroutine(load());
+        StartCoroutine(load());
+    }
+
+    Dictionary<string, AssetBundleCreateRequest> m_dict = new Dictionary<string, AssetBundleCreateRequest>();
+    IEnumerator load() {
+
+        string path = Path.Combine(Utility.AssetBundlesOutputPath, Utility.GetPlatformName());
+        path = Path.Combine(path, "test.hd");
+
+        AssetBundle ab;
+        var t = LoadFromFileAsync(path);
+        while (!t.isDone) {
+            yield return null;
+        }
+        ab = t.assetBundle;
+        print("name：" + ab.GetInstanceID());
+
+
+        StartCoroutine(load2());
+    }
+
+    IEnumerator load2() {
+        string path = Path.Combine(Utility.AssetBundlesOutputPath, Utility.GetPlatformName());
+        path = Path.Combine(path, "test.hd");
+
+        AssetBundle ab;
+        var t = LoadFromFileAsync(path);
+        while (!t.isDone) {
+            yield return null;
+        }
+        ab = t.assetBundle;
+        print("name：" + ab.GetInstanceID());
+    }
+
+    AssetBundleCreateRequest LoadFromFileAsync(string path) {
+        AssetBundleCreateRequest ret = null;
+        if (!m_dict.TryGetValue(path, out ret)) {
+            ret = AssetBundle.LoadFromFileAsync(path);
+            m_dict.Add(path, ret);
+        }
+        return ret;
     }
 
     // Update is called once per frame
